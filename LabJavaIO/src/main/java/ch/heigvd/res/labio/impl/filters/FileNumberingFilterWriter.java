@@ -23,9 +23,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
-  private int cptLign = 1;
+  private int cptLine = 1;
   private boolean firstPassed = false;
-  private boolean lignPassed = false;
+  private boolean linePassed = false;
   private String tmp = "";
   private String carLign;
   private boolean mac = false; // permet de vérifier que le saut de ligne ne soit pas un saut de ligne windows (\r\n)
@@ -49,23 +49,23 @@ public class FileNumberingFilterWriter extends FilterWriter {
   public void write(int c) throws IOException {
     // 1ère ligne ?
     if (!firstPassed){
-      tmp = cptLign + "\t";
+      tmp = cptLine + "\t";
       firstPassed = true;
     }
     // Regarde si c'est un saut de ligne linux
     // Si on a eu un saut de ligne mac avant, il passe au prochain test
-    else if (c == '\n' && !lignPassed && !mac){
+    else if (c == '\n' && !linePassed && !mac){
       carLign = "\n"; // pour Linux
-      tmp = carLign + (++cptLign) + "\t";
-      lignPassed = true;
+      tmp = carLign + (++cptLine) + "\t";
+      linePassed = true;
     }
     // Regarde si c'est un saut de ligne mac
-    else if ((c == '\r' && !lignPassed) || mac){
+    else if ((c == '\r' && !linePassed) || mac){
       // Contrôle si ce n'est pas finalement un saut windows
       if (c == '\n'){
         carLign = "\r\n"; // pour Windows
-        tmp = carLign + (++cptLign) + "\t";
-        lignPassed = true;
+        tmp = carLign + (++cptLine) + "\t";
+        linePassed = true;
         mac =false;
       }
       // Rencontre d'un saut mac
@@ -76,17 +76,17 @@ public class FileNumberingFilterWriter extends FilterWriter {
         mac = true; // bool pour mettre en attente l'écriture
       }
       else {
-        tmp = carLign + (++cptLign) + "\t" + (char)c;
-        lignPassed = true;
+        tmp = carLign + (++cptLine) + "\t" + (char)c;
+        linePassed = true;
         mac = false;
       }
     }
     // Aucun saut de ligne rencontré
     else{
-      lignPassed = false;
+      linePassed = false;
     }
 
-    if (!lignPassed) {
+    if (!linePassed) {
       tmp += (char) c;
     }
 
