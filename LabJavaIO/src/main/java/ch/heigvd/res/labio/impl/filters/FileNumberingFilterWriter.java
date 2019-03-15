@@ -23,19 +23,78 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
+  private int cptLign = 1;
+  private boolean firstPassed = false;
+  private boolean lignPassed = false;
+  private String tmp = "";
+  private String carLign;
+  private boolean mac = false; // permet de vérifier que le saut de ligne ne soit pas un saut de ligne windows (\r\n)
+
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    for(int i = off; i < off + len;++i){
+      write(str.charAt(i));
+    }
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len;++i){
+      write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    // 1ère ligne ?
+    if (!firstPassed){
+      tmp = cptLign + "\t";
+      firstPassed = true;
+    }
+    // Regarde si c'est un saut de ligne linux
+    // Si on a eu un saut de ligne mac avant, il passe au prochain test
+    else if (c == '\n' && !lignPassed && !mac){
+      carLign = "\n"; // pour Linux
+      tmp = carLign + (++cptLign) + "\t";
+      lignPassed = true;
+    }
+    // Regarde si c'est un saut de ligne mac
+    else if ((c == '\r' && !lignPassed) || mac){
+      // Contrôle si ce n'est pas finalement un saut windows
+      if (c == '\n'){
+        carLign = "\r\n"; // pour Windows
+        tmp = carLign + (++cptLign) + "\t";
+        lignPassed = true;
+        mac =false;
+      }
+      // Rencontre d'un saut mac
+      // On doit vérifier le caractère suivant pour savoir si ce n'est pas un saut windows
+      // (mise en attente de l'écriture)
+      else if (!mac){
+        carLign = "\r"; // pour Mac
+        mac = true; // bool pour mettre en attente l'écriture
+      }
+      else {
+        tmp = carLign + (++cptLign) + "\t" + (char)c;
+        lignPassed = true;
+        mac = false;
+      }
+    }
+    // Aucun saut de ligne rencontré
+    else{
+      lignPassed = false;
+    }
+
+    if (!lignPassed) {
+      tmp += (char) c;
+    }
+
+    // Si un saut mac est rencontré, on met en attente l'écriture
+    if(!mac) {
+      out.write(tmp);
+      tmp = "";
+    }
   }
 
 }
