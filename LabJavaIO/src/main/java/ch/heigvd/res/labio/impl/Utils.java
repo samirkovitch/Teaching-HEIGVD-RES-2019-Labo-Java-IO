@@ -20,7 +20,30 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    // Il n'y a pas de jeu de mot par rapport au cours
+    String res[] = new String[2];
+    res[0] = "";
+
+    // Parcout la ligne afin de trouver le prochain saut
+    for (int i = 0; i < lines.length(); ++i) {
+      // Si il y a un saut
+      if (lines.charAt(i) == '\n' || lines.charAt(i) == '\r') {
+        // Vérifie si ce n'est pas un saut windows
+        if (lines.charAt(i) == '\r' && i + 1 < lines.length() && lines.charAt(i + 1) == '\n') {
+          ++i;
+        }
+
+        res[0] = lines.substring(0, i + 1);
+        res[1] = lines.substring(i + 1);
+        break;
+      }
+    }
+
+    if(res[0].equals("")){
+      res[1] = lines;
+    }
+
+    return res;
   }
 
 }
