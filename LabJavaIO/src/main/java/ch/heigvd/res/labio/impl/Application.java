@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import java.io.*;
 
 /**
  *
@@ -123,7 +124,20 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String pathDest = WORKSPACE_DIRECTORY;
+
+    for (String tagName : quote.getTags()){
+      pathDest += File.separator + tagName;
+    }
+
+    File file = new File(pathDest);
+    file.mkdirs();
+
+   file.createNewFile();
+
+    FileWriter writer = new FileWriter(pathDest);
+    writer.write(quote.getQuote());
+    writer.close();
   }
   
   /**
@@ -140,6 +154,12 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+
+        try {
+          writer.write(file.getPath() + "\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     });
   }
