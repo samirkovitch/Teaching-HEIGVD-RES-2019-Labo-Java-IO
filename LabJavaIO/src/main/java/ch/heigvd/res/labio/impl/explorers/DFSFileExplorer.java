@@ -22,11 +22,8 @@ public class DFSFileExplorer implements IFileExplorer {
     // Récupère tous les fichiers du répertoire
     File[] files = rootDirectory.listFiles();
 
-    // Si le répertoire ne contient pas de fichier
-    if(files == null) {
-      return;
-    }
-    else {
+    // Si le répertoire contient de fichier
+    if(files != null) {
       // Trie les fichiers par ordre alphabétique
       Arrays.sort(files);
 

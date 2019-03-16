@@ -127,17 +127,18 @@ public class Application implements IApplication {
     String pathDest = WORKSPACE_DIRECTORY;
 
     for (String tagName : quote.getTags()){
-      pathDest += File.separator + tagName;
+      pathDest += "/" + tagName;
     }
 
     File file = new File(pathDest);
     file.mkdirs();
 
-   file.createNewFile();
+    if (file.createNewFile()){
+      FileWriter writer = new FileWriter(pathDest);
+      writer.write(quote.getQuote());
+      writer.close();
 
-    FileWriter writer = new FileWriter(pathDest);
-    writer.write(quote.getQuote());
-    writer.close();
+    }
   }
   
   /**
