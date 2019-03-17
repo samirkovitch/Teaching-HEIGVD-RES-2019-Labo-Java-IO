@@ -91,6 +91,10 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
+
+      //storeQuote(quote,"quote-" + i + ".utf8");
+      storeQuote(quote, "/quote-" + i + ".utf8");
+
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
@@ -125,19 +129,19 @@ public class Application implements IApplication {
    */
   void storeQuote(Quote quote, String filename) throws IOException {
     String pathDest = WORKSPACE_DIRECTORY;
-
-    for (String tagName : quote.getTags()){
-      pathDest += "/" + tagName;
+    
+    for(String tag : quote.getTags()) {
+      pathDest += "/" + tag;
     }
 
-    File file = new File(pathDest);
-    file.mkdirs();
+    new File(pathDest).mkdirs();
+    pathDest += filename;
 
-    if (file.createNewFile()){
-      FileWriter writer = new FileWriter(pathDest);
-      writer.write(quote.getQuote());
-      writer.close();
+    if (new File(pathDest).createNewFile()) {
+      FileWriter fw = new FileWriter(pathDest);
 
+      fw.write(quote.getQuote());
+      fw.close();
     }
   }
   
